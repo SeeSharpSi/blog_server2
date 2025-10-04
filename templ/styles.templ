@@ -1,0 +1,45 @@
+package templ
+
+templ ThemeVariables(theme string) {
+	if theme == "nord" {
+		<style>
+			:root {
+				/* Palette - Nord */
+				--bg-primary: #2E3440;
+				--bg-secondary: #3B4252;
+				--text-primary: #ECEFF4;
+				--text-secondary: #D8DEE9;
+				--accent-primary: #88C0D0;
+				--accent-danger: #BF616A;
+				--border-color: #4C566A;
+			}
+		</style>
+	} else if theme == "solarized-light" {
+		<style>
+			:root {
+				/* Palette - Solarized Light */
+				--bg-primary: #fdf6e3;
+				--bg-secondary: #eee8d5;
+				--text-primary: #586e75;
+				--text-secondary: #839496;
+				--accent-primary: #268bd2;
+				--accent-danger: #dc322f;
+				--border-color: #93a1a1;
+			}
+		</style>
+	} else {
+		<style>
+			:root {
+				/* Palette - Rosé Pine Moon (Default) */
+				--bg-primary: #232136;
+				--bg-secondary: #2a273f;
+				--text-primary: #e0def4;
+				--text-secondary: #908caa;
+				--accent-primary: #c4a7e7;
+				--accent-danger: #ea9a97;
+				--border-color: #393552;
+			}
+		</style>
+	}
+}
+

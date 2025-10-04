@@ -1,0 +1,54 @@
+package templ
+
+templ Error500() {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<title>500 - Internal Server Error</title>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<link rel="stylesheet" type="text/css" href="/static/styles.css"/>
+			<style>
+				body {
+					font-family: Arial, Helvetica, sans-serif;
+					text-align: center;
+					padding: 50px;
+				}
+				.error-code {
+					font-size: 120px;
+					font-weight: bold;
+					color: #ff6b6b;
+					margin: 0;
+				}
+				.error-message {
+					font-size: 24px;
+					color: #666;
+					margin: 20px 0;
+				}
+				.error-details {
+					font-size: 16px;
+					color: #999;
+					margin: 20px 0;
+				}
+				.home-link {
+					display: inline-block;
+					padding: 10px 20px;
+					background-color: #007bff;
+					color: white;
+					text-decoration: none;
+					border-radius: 5px;
+					margin-top: 20px;
+				}
+				.home-link:hover {
+					background-color: #0056b3;
+				}
+			</style>
+		</head>
+		<body>
+			<h1 class="error-code">500</h1>
+			<p class="error-message">Something went wrong on our end.</p>
+			<p class="error-details">Please try again later or contact support if the problem persists.</p>
+			<a href="/" class="home-link">Go Home</a>
+		</body>
+	</html>
+}
