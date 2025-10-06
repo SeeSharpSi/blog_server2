@@ -59,7 +59,9 @@ func main() {
 	// set up mux with middleware
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("./static"))
+	fs2 := http.FileServer(http.Dir("./posts/images"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+	mux.Handle("/posts/images/", http.StripPrefix("/posts/images/", fs2))
 	mux.HandleFunc("/", h.Index)
 	mux.HandleFunc("/posts", h.Posts_List)
 	mux.HandleFunc("/health", h.Health)

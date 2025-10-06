@@ -1,6 +1,8 @@
 package post_logic
 
 import (
+	"fmt"
+	"log"
 	"strings"
 
 	"golang.org/x/net/html"
@@ -12,9 +14,23 @@ type Post struct {
 	Content string
 }
 
-// should get the first (or only) h1 in the html and make it the post's title
-// ID should also be the index of the file (like, the 2nd file in the list)
-func (p *Post) Parse(doc *html.Node) {
+// Populates the Title and Content fields of a post using html 
+// The title is based off of the first h1 header in the html file 
+func (p *Post) Parse(html_content string) {
+	r := strings.NewReader(html_content)
+
+	doc, err := html.Parse(r) 
+	if err != nil {
+		log.Fatalf("Failed to parse HTML: %v", err) 
+	}
+
+	h1Text, ok := getH1Text(doc)
+	if !ok {
+		fmt.Println("No <h1> tag found.")
+	} else {
+		p.Title = h1Text
+		p.Content = html_content
+	}
 }
 
 // getH1Text finds the first h1 node and returns its text content.
