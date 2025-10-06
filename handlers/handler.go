@@ -44,12 +44,12 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Posts_List(w http.ResponseWriter, r *http.Request) {
 	requestID := logger.RequestIDFromContext(r.Context())
 	slog.Info("handling test request", "request_id", requestID)
 
 	// Execute business logic
-	pageData, err := h.Service.RenderTestPage(r.Context())
+	pageData, err := h.Service.RenderPosts_ListPage(r.Context())
 	if err != nil {
 		slog.Error("failed to execute test page business logic", "error", err, "request_id", requestID)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -67,7 +67,7 @@ func (h *Handler) Test(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Render template
-	if err := templ.Test().Render(r.Context(), w); err != nil {
+	if err := templ.Posts_List().Render(r.Context(), w); err != nil {
 		slog.Error("failed to render test template", "error", err, "request_id", requestID)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

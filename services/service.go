@@ -13,7 +13,7 @@ import (
 type Service interface {
 	// Page operations
 	RenderIndexPage(ctx context.Context) (*PageData, error)
-	RenderTestPage(ctx context.Context) (*PageData, error)
+	RenderPosts_ListPage(ctx context.Context) (*PageData, error)
 	RenderNotFoundPage(ctx context.Context) (*PageData, error)
 
 	// Session operations
@@ -86,15 +86,14 @@ func (s *service) RenderIndexPage(ctx context.Context) (*PageData, error) {
 }
 
 // RenderTestPage handles the business logic for rendering the test page
-func (s *service) RenderTestPage(ctx context.Context) (*PageData, error) {
+func (s *service) RenderPosts_ListPage(ctx context.Context) (*PageData, error) {
 	requestID := logger.RequestIDFromContext(ctx)
 	s.logger.Info("rendering test page", "request_id", requestID)
 
 	// Business logic for test page
 	pageData := &PageData{
-		Title:      "Test Page",
-		IsLoggedIn: false,
-		CustomData: map[string]interface{}{
+		Title:      "Posts",
+		IsLoggedIn: false, CustomData: map[string]interface{}{
 			"testMessage": "This is a test page from the service layer!",
 		},
 		Timestamp: "2024-01-01T00:00:00Z",

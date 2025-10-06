@@ -61,7 +61,7 @@ func main() {
 	fs := http.FileServer(http.Dir("./static"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 	mux.HandleFunc("/", h.Index)
-	mux.HandleFunc("/test", h.Test)
+	mux.HandleFunc("/posts", h.Posts_List)
 	mux.HandleFunc("/health", h.Health)
 
 	// Custom 404 handler for unmatched routes
