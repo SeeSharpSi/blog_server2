@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"seesharpsi/htmx_quickstart/logger"
+	"seesharpsi/htmx_quickstart/post_logic"
 	"seesharpsi/htmx_quickstart/session"
 )
 
@@ -13,7 +14,8 @@ import (
 type Service interface {
 	// Page operations
 	RenderIndexPage(ctx context.Context) (*PageData, error)
-	RenderPosts_ListPage(ctx context.Context) (*PageData, error)
+	RenderPosts_ListPage(ctx context.Context) (PostsListPageData, error)
+	RenderPostPage(ctx context.Context, postId int) (PostPageData, error)
 	RenderNotFoundPage(ctx context.Context) (*PageData, error)
 
 	// Session operations
@@ -51,14 +53,57 @@ type ValidationResult struct {
 type service struct {
 	sessionManager *session.Manager
 	logger         *slog.Logger
+	postCache      *post_logic.PostCache
+}
+
+type PostsListPageData struct {
+	IsLoggedIn bool
+	UserID     string
+	Posts      []post_logic.Post
+}
+
+type PostPageData struct {
+	IsLoggedIn bool
+	UserID     string
+	Post       post_logic.Post
 }
 
 // NewService creates a new service instance with dependencies
-func NewService(sessionManager *session.Manager, logger *slog.Logger) Service {
+func NewService(sessionManager *session.Manager, logger *slog.Logger, postCache *post_logic.PostCache) Service {
 	return &service{
 		sessionManager: sessionManager,
 		logger:         logger,
+		postCache:      postCache,
 	}
+}
+
+func (s *service) RenderPosts_ListPage(ctx context.Context) (PostsListPageData, error) {
+	requestID := logger.RequestIDFromContext(ctx)
+	s.logger.Info("rendering index page", "request_id", requestID)
+
+	posts := s.postCache.GetPosts()
+
+	pageData := PostsListPageData{
+		Posts: posts,
+	}
+
+	return pageData, nil
+}
+
+func (s *service) RenderPostPage(ctx context.Context, postId int) (PostPageData, error) {
+	requestID := logger.RequestIDFromContext(ctx)
+	s.logger.Info("rendering index page", "request_id", requestID)
+
+	post, err := s.postCache.GetPostByID(postId)
+	if err != nil {
+		return PostPageData{}, err
+	}
+
+	pageData := PostPageData{
+		Post: post,
+	}
+
+	return pageData, nil
 }
 
 // RenderIndexPage handles the business logic for rendering the index page
@@ -81,29 +126,6 @@ func (s *service) RenderIndexPage(ctx context.Context) (*PageData, error) {
 	// - Check user permissions
 	// - Load dynamic content
 	// - Apply business rules
-
-	return pageData, nil
-}
-
-// RenderTestPage handles the business logic for rendering the test page
-func (s *service) RenderPosts_ListPage(ctx context.Context) (*PageData, error) {
-	requestID := logger.RequestIDFromContext(ctx)
-	s.logger.Info("rendering test page", "request_id", requestID)
-
-	// Business logic for test page
-	pageData := &PageData{
-		Title:      "Posts",
-		IsLoggedIn: false, CustomData: map[string]interface{}{
-			"testMessage": "This is a test page from the service layer!",
-		},
-		Timestamp: "2024-01-01T00:00:00Z",
-	}
-
-	// Here you could add business logic like:
-	// - Run tests
-	// - Validate data
-	// - Process forms
-	// - etc.
 
 	return pageData, nil
 }

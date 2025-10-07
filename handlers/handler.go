@@ -3,6 +3,7 @@ package handlers
 import (
 	"log/slog"
 	"net/http"
+	"strconv"
 	"time"
 
 	"seesharpsi/htmx_quickstart/logger"
@@ -67,7 +68,45 @@ func (h *Handler) Posts_List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Render template
-	if err := templ.Posts_List().Render(r.Context(), w); err != nil {
+	if err := templ.Posts_List(pageData).Render(r.Context(), w); err != nil {
+		slog.Error("failed to render test template", "error", err, "request_id", requestID)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+}
+
+func (h *Handler) Post(w http.ResponseWriter, r *http.Request) {
+	requestID := logger.RequestIDFromContext(r.Context())
+	slog.Info("handling test request", "request_id", requestID)
+
+	id := r.PathValue("id")
+	postId, err := strconv.Atoi(id)
+	if err != nil {
+		slog.Error("invalid post ID in URL", "error", err, "path", r.URL.Path, "request_id", requestID)
+		h.NotFound(w, r) // Treat a non-integer ID as a 404 Not Found
+		return
+	}
+
+	// Execute business logic
+	pageData, err := h.Service.RenderPostPage(r.Context(), postId)
+	if err != nil {
+		slog.Error("failed to execute test page business logic", "error", err, "request_id", requestID)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	// Get or create session
+	sess, cookie := h.Service.GetOrCreateSession(r)
+	http.SetCookie(w, &cookie)
+
+	// Update page data with session info
+	if sess != nil {
+		pageData.UserID = sess.ID
+		pageData.IsLoggedIn = true
+	}
+
+	// Render template
+	if err := templ.Post(pageData).Render(r.Context(), w); err != nil {
 		slog.Error("failed to render test template", "error", err, "request_id", requestID)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return

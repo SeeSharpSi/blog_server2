@@ -12,6 +12,7 @@ import (
 	"seesharpsi/htmx_quickstart/config"
 	"seesharpsi/htmx_quickstart/handlers"
 	"seesharpsi/htmx_quickstart/logger"
+	"seesharpsi/htmx_quickstart/post_logic"
 	"seesharpsi/htmx_quickstart/services"
 	"seesharpsi/htmx_quickstart/session"
 )
@@ -48,8 +49,17 @@ func main() {
 
 	sessionManager := session.NewManager(cfg)
 
+	const postsDirectory = "./posts"
+
+	// Create and initialize the PostCache
+	postCache, err := post_logic.NewPostCache(postsDirectory)
+	if err != nil {
+		slog.Error("failed to initialize post cache", "error", err)
+		os.Exit(1)
+	}
+
 	// Create service layer with dependencies
-	service := services.NewService(sessionManager, slog.Default())
+	service := services.NewService(sessionManager, slog.Default(), postCache)
 
 	// Create handler with injected service
 	h := &handlers.Handler{
@@ -62,8 +72,9 @@ func main() {
 	fs2 := http.FileServer(http.Dir("./posts/images"))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 	mux.Handle("/posts/images/", http.StripPrefix("/posts/images/", fs2))
-	mux.HandleFunc("/", h.Index)
+	mux.HandleFunc("/", h.Posts_List)
 	mux.HandleFunc("/posts", h.Posts_List)
+	mux.HandleFunc("/post/{id}", h.Post)
 	mux.HandleFunc("/health", h.Health)
 
 	// Custom 404 handler for unmatched routes

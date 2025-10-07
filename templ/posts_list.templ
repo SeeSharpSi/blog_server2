@@ -1,6 +1,9 @@
 package templ
 
-templ Posts_List() {
+import "seesharpsi/htmx_quickstart/services"
+import "fmt"
+
+templ Posts_List(data services.PostsListPageData) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -9,7 +12,7 @@ templ Posts_List() {
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<link rel="stylesheet" type="text/css" href="/static/styles.css"/>
 			<script type="text/javascript" src="/static/htmx.min.js"></script>
-			@ThemeVariables("replace me with a style from styles.templ")
+			@ThemeVariables("nord")
 			<style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -17,8 +20,13 @@ templ Posts_List() {
     </style>
 		</head>
 		<body>
-			<h1>Posts</h1>
-			<p>A website created by me.</p>
+			<h1>Silas Tompkins</h1>
+			for i, post := range data.Posts {
+				<div class="post">
+					<a class="post_link" href={ fmt.Sprintf("/post/%d", i) }><span></span></a>
+					<h2>{ post.Title }</h2>
+				</div>
+			}
 		</body>
 	</html>
 }

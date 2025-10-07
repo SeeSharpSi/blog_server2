@@ -33,11 +33,11 @@ func Index() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ThemeVariables("replace me with a style from styles.templ").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ThemeVariables("nord").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<style>\n        body {\n            font-family: Arial, Helvetica, sans-serif;\n        }\n    </style></head><body><h1>Posts</h1><p>A website created by me.</p></body></html>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<style>\n        body {\n            font-family: Arial, Helvetica, sans-serif;\n        }\n    </style></head><body><h1>Silas Tompkins</h1><p>A website created by me.</p></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,6 +1,8 @@
 package templ
 
-templ Post() {
+import "seesharpsi/htmx_quickstart/services"
+
+templ Post(data services.PostPageData) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -9,7 +11,7 @@ templ Post() {
 			<meta name="viewport" content="width=device-width, initial-scale=1"/>
 			<link rel="stylesheet" type="text/css" href="/static/styles.css"/>
 			<script type="text/javascript" src="/static/htmx.min.js"></script>
-			@ThemeVariables("replace me with a style from styles.templ")
+			@ThemeVariables("nord")
 			<style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -18,8 +20,9 @@ templ Post() {
 		</head>
 		<body>
 			<h1><a href="/">Home</a></h1>
-			<p>A website created by me.</p>
+			<p>
+				@templ.Raw(data.Post.Content)
+			</p>
 		</body>
 	</html>
 }
-
